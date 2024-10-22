@@ -5,6 +5,7 @@ import { MediaProvider } from '@/contexts/MediaContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import './globals.css';
+import Loading from './loading';
 
 export default function RootLayout({ children }) {  
   return (
@@ -25,5 +26,3 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
-
-

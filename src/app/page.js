@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { fetchPopularMovies, fetchPopularTVShows, fetchPopularPeople, fetchTopRatedMovies, fetchAiringTodayTVShows, fetchOnTheAirTVShows } from '@/lib/tmdb';
 import MediaItem from "@/components/MediaItem";
 // import TrendingSection from "@/components/TrendingSection";
-
+import Loading from './loading';
 export default function Home() {
   const [movies, setMovies] = useState([]);
   const [tvShows, setTvShows] = useState([]);
@@ -15,9 +15,11 @@ export default function Home() {
   // const [upcomingMovies, setUpcomingMovies] = useState([]);
   const [airingTodayTVShows, setAiringTodayTVShows] = useState([]);
   const [onTheAirTVShows, setOnTheAirTVShows] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
+      setIsLoading(true);
       try {
         const [moviesData, tvShowsData, peopleData, topRatedMoviesData, airingTodayTVShowsData, onTheAirTVShowsData] = await Promise.all([
           fetchPopularMovies(),
@@ -38,6 +40,8 @@ export default function Home() {
         setOnTheAirTVShows(onTheAirTVShowsData.results.slice(0, 8));
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
       }
     }
 
@@ -103,6 +107,10 @@ export default function Home() {
       />
     ));
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
