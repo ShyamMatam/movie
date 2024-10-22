@@ -1,6 +1,6 @@
 import React from 'react';
 import { fetchTVShowDetails, fetchTVShowCredits } from '@/lib/tmdb';
-import TVShowDetails from '@/components/TVShowDetails';
+import TVShowDetails from '@/components/TvShowDetails';
 
 async function TVShowPage({ params }) {
   const { id } = params;
