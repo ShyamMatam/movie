@@ -1,101 +1,160 @@
-import Image from "next/image";
+'use client'
+
+import { useState, useEffect, useCallback } from 'react';
+import { fetchPopularMovies, fetchPopularTVShows, fetchPopularPeople, fetchTopRatedMovies, fetchAiringTodayTVShows, fetchOnTheAirTVShows } from '@/lib/tmdb';
+import MediaItem from "@/components/MediaItem";
+// import TrendingSection from "@/components/TrendingSection";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [movies, setMovies] = useState([]);
+  const [tvShows, setTvShows] = useState([]);
+  const [people, setPeople] = useState([]);
+  const [watchlist, setWatchlist] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+  const [topRatedMovies, setTopRatedMovies] = useState([]);
+  // const [upcomingMovies, setUpcomingMovies] = useState([]);
+  const [airingTodayTVShows, setAiringTodayTVShows] = useState([]);
+  const [onTheAirTVShows, setOnTheAirTVShows] = useState([]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [moviesData, tvShowsData, peopleData, topRatedMoviesData, airingTodayTVShowsData, onTheAirTVShowsData] = await Promise.all([
+          fetchPopularMovies(),
+          fetchPopularTVShows(),
+          fetchPopularPeople(),
+          fetchTopRatedMovies(),
+          // fetchUpcomingMovies(),
+          fetchAiringTodayTVShows(),
+          fetchOnTheAirTVShows(),
+        ]);
+
+        setMovies(moviesData.results.slice(0, 8));
+        setTvShows(tvShowsData.results.slice(0, 8));
+        setPeople(peopleData.results.slice(0, 8));
+        setTopRatedMovies(topRatedMoviesData.results.slice(0, 8));
+        // setUpcomingMovies(upcomingMoviesData.results.slice(0, 8));
+        setAiringTodayTVShows(airingTodayTVShowsData.results.slice(0, 8));
+        setOnTheAirTVShows(onTheAirTVShowsData.results.slice(0, 8));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  const toggleWatchlist = useCallback((item, mediaType) => {
+    console.log("toggleWatchlist called with:", item, mediaType);
+    try {
+      setWatchlist(prev => {
+        const exists = prev.some(i => i.id === item.id && i.mediaType === mediaType);
+        let newWatchlist;
+        if (exists) {
+          newWatchlist = prev.filter(i => !(i.id === item.id && i.mediaType === mediaType));
+        } else {
+          newWatchlist = [...prev, { ...item, mediaType }];
+        }
+        console.log('Watchlist updated:', newWatchlist);
+        return newWatchlist;
+      });
+    } catch (error) {
+      console.error("Error in toggleWatchlist:", error);
+    }
+  }, []);
+
+  const toggleFavorite = useCallback((item, mediaType) => {
+    console.log("toggleFavorite called with:", item, mediaType);
+    try {
+      setFavorites(prev => {
+        const exists = prev.some(i => i.id === item.id && i.mediaType === mediaType);
+        let newFavorites;
+        if (exists) {
+          newFavorites = prev.filter(i => !(i.id === item.id && i.mediaType === mediaType));
+        } else {
+          newFavorites = [...prev, { ...item, mediaType }];
+        }
+        console.log('Favorites updated:', newFavorites);
+        return newFavorites;
+      });
+    } catch (error) {
+      console.error("Error in toggleFavorite:", error);
+    }
+  }, []);
+
+  const isInWatchlist = useCallback((item, mediaType) => {
+    return watchlist.some(i => i.id === item.id && i.mediaType === mediaType);
+  }, [watchlist]);
+
+  const isFavorite = useCallback((item, mediaType) => {
+    return favorites.some(i => i.id === item.id && i.mediaType === mediaType);
+  }, [favorites]);
+
+  const renderMediaItems = (items, mediaType) => {
+    return items.map(item => (
+      <MediaItem 
+        key={item.id} 
+        item={item} 
+        mediaType={mediaType}
+        isInWatchlist={isInWatchlist(item, mediaType)}
+        isFavorite={isFavorite(item, mediaType)}
+        onToggleWatchlist={() => toggleWatchlist(item, mediaType)}
+        onToggleFavorite={() => toggleFavorite(item, mediaType)}
+      />
+    ));
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      <main className="container mx-auto py-8 flex-grow bg-white dark:bg-gray-800 text-black dark:text-white">
+        <section className="mb-8">
+          <h2 className="text-xl font-bold mb-4">Popular Movies</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {renderMediaItems(movies, 'movie')}
+          </div>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="text-xl font-bold mb-4">Popular TV Shows</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {renderMediaItems(tvShows, 'tv')}
+          </div>
+        </section>
+ 
+ {/* top Rated Movies */}
+        <section className="mb-8">  
+          <h2 className="text-xl font-bold mb-4">Top Rated Movies</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {renderMediaItems(topRatedMovies, 'movie')}
+          </div>
+        </section>
+
+        {/* Upcoming Movies */}
+        {/* <section className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">Upcoming Movies</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {renderMediaItems(upcomingMovies, 'movie')}
+          </div>
+        </section>   */}
+
+        {/* Airing Today TV Shows */}
+        <section className="mb-8">
+          <h2 className="text-xl font-bold mb-4">Airing Today TV Shows</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {renderMediaItems(airingTodayTVShows, 'tv')}
+          </div>
+        </section>
+
+        {/* On The Air TV Shows */}
+        <section className="mb-8">
+          <h2 className="text-xl font-bold mb-4">On The Air TV Shows</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {renderMediaItems(onTheAirTVShows, 'tv')}
+          </div>
+        </section>  
+        
+        {/* <TrendingSection /> */}
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }

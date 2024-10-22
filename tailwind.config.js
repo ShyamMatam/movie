@@ -7,11 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
-      colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-      },
+      // Your theme extensions here
     },
   },
+  darkMode: 'class',
   plugins: [],
 };
