@@ -1,37 +1,66 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# IMDB Clone
+
+A modern, responsive web application that emulates core IMDB functionality, built with Next.js and React.
+
+
+## Features
+
+- Browse popular movies and TV shows
+- View detailed information about movies, TV shows, and celebrities
+- Search functionality for movies, TV shows, and people
+- Responsive design with dark mode support
+- Infinite scrolling for seamless browsing experience
+
+## Tech Stack
+
+- Next.js 14
+- React 18
+- Tailwind CSS
+- The Movie Database (TMDB) API
+- React Query
+- Framer Motion
+- SWR for data fetching
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository:
+   ```
+   git clone https://github.com/your-username/imdb-clone.git
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. Install dependencies:
+   ```
+   cd imdb-clone
+   npm install
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Create a `.env.local` file in the root directory and add your TMDB API key:
+   ```
+   NEXT_PUBLIC_API_KEY=your_tmdb_api_key_here
+   ```
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+4. Run the development server:
+   ```
+   npm run dev
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
 
-## Learn More
+## Deployment
 
-To learn more about Next.js, take a look at the following resources:
+This project is deployed on Vercel. Any pushes to the `main` branch will trigger a new deployment.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contributing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This project is open source and available under the [MIT License](LICENSE).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-# movie-app
+## Acknowledgements
+
+- Data provided by [The Movie Database (TMDB)](https://www.themoviedb.org/)
+- Icons from [React Icons](https://react-icons.github.io/react-icons/)
+
+
